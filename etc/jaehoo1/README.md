@@ -94,7 +94,54 @@ A는 B의 일을 시작시키고 바로 리턴한다. (논블럭) 그리고 A와
   
 블럭/논블럭은 동시성과는 무관한 이야기이다. 단지 메서드 호출한 후로 시간이 오래 걸리면 블로킹이다. 즉 메서드가 얼마나 오래 걸리냐의 문제로 블록과 논블록은 귀결된다.
 
-## WebServer VS WebApplicationServer 
+## WebServer VS WebApplicationServer
+
+### WebServer
+웹 브라우저의 요청을 받아 HTTP를 통해 웹 브라우저에서 요청하는 HTML 문서나 오브젝트(이미지 파일 등)를 전송해주는 서버  
+>예 : Apache HTTP Server, Microsoft Internet Information Service, Google Web Server 등
+
+### WebApplicationServer
+사용자에게 동적 서비스를 제공하기 위해 웹 서버로부터 요청을 받아 데이터 처리를 수행하거나, 웹 서버와 데이터베이스 서버 또는 웹 서버와 파일 서버 사이에서 인터페이스 역할을 수행하는 서버
+>예 : Oracle WebLogic, Apache Tomcat, IBM WebSphere, JEUS 등
+
+### WebServer가 필요한 이유?
+* 클라이언트(웹 브라우저)에 이미지 파일(정적 컨텐츠)을 보내는 과정
+  * 이미지 파일과 같은 정적인 파일들은 웹 문서(HTML 문서)가 클라이언트로 보내질 때 함께 가는 것이 아니다.
+  * 클라이언트는 HTML 문서를 먼저 받고 그에 맞게 필요한 이미지 파일들을 다시 서버로 요청하면 그때서야 이미지 파일을 받아온다.
+  * Web Server를 통해 정적인 파일들을 Application Server까지 가지 않고 앞단에서 빠르게 보내줄 수 있다.
+* 따라서 Web Server에서는 정적 컨텐츠만 처리하도록 기능을 분배하여 서버의 부담을 줄일 수 있다.
+
+### WAS가 필요한 이유?
+* 웹 페이지는 정적 컨텐츠와 동적 컨텐츠가 모두 존재
+  * 사용자의 요청에 맞게 적절한 동적 컨텐츠를 만들어서 제공해야 한다.
+  * 이때, WebServer만을 이용한다면 사용자가 원하는 요청에 대한 결과값을 모두 미리 만들어 놓고(정적 컨텐츠) 서비스를 해야 한다.
+  * 하지만 이렇게 수행하기에는 자원이 절대적으로 부족하다.
+* 따라서 WAS를 통해 요청에 맞는 데이터를 DB에서 가져와서 비즈니스 로직에 맞게 그때 그때 결과를 만들어서 제공함으로써 자원을 효율적으로 사용할 수 있다.
+
+### 그렇다면 WAS가 Web Server의 기능도 모두 수행하면 되지 않을까? X
+* 기능을 분리하여 서버 부하 방지
+  * WAS는 DB 조회나 다양한 로직을 처리하느라 바쁘기 때문에 단순한 정적 컨텐츠는 WebServer에서 빠르게 클라이언트에 제공하는 것이 좋다.
+  * WAS는 기본적으로 동적 컨텐츠를 제공하기 위해 존재하는 서버이다.
+  * 만약 정적 컨텐츠 요청까지 WAS가 처리한다면 정적 데이터 처리로 인해 부하가 커지게 되고, 동적 컨텐츠의 처리가 지연됨에 따라 수행 속도가 느려진다.
+  * 즉, 이로 인해 페이지 노출 시간이 늘어나게 될 것이다.
+* 물리적으로 분리하여 보안 강화
+  * SSL에 대한 암복호화 처리에 WebServer를 사용
+* 여러 대의 WAS를 연결 가능
+  * Load Balancing을 위해서 WebServer를 사용
+  * fail over(장애 극복), fail back 처리에 유리
+  * 특히 대용량 웹 어플리케이션의 경우(여러 개의 서버 사용) WebServer와 WAS를 분리하여 무중단 운영을 위한 장애 극복에 쉽게 대응할 수 있다.
+  * 예를 들어, 앞 단의 WebServer에서 오류가 발생한 WAS를 이용하지 못하도록 한 후 WAS를 재시작함으로써 사용자는 오류를 느끼지 못하고 이용할 수 있다.
+* 여러 웹 어플리케이션 서비스 가능
+  * 예를 들어, 하나의 서버에서 PHP Application과 Java Application을 함께 사용하는 경우
+* 기타
+  * 접근 허용 IP 관리, 2대 이상의 서버에서의 세션 관리 등도 WebServer에서 처리하면 효율적이다.
+
+즉, 자원 이용의 효율성 및 장애 극복, 배포 및 유지보수의 편의성을 위해 Web Server와 WAS를 분리한다.  
+WebServer를 WAS 앞에 두고 필요한 WAS들을 WebServer에 플러그인 형태로 설정하면 더욱 효율적인 분산 처리가 가능하다.
+
+>failover : 시스템, 서버, 네트워크가 이상이 생겼을 경우 예비시스템으로 전환되는 기능  
+>failback : failover에 따라 전환된 서버/시스템/네트워크를 장애 발생전으로 되돌리는 처리
+
 ## Monolithic service Application VS Micro Service Application
 ## Multi Module VS MSA
 ## NginX VS Apache
