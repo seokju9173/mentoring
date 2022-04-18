@@ -663,14 +663,106 @@ Transaction Per Second 의 약자로 주로 서버 성능의 척도가 됨. 초�
   * JDK 1.4부터 포함된 표준 로깅 API
   * 별도 라이브러리 추가 불필요
   * 기능이 많이 부족해 다른 로그 라이브러리를 많이 사용
-* Apache Commons logging
+* Apache commons logging
   * 아파치 재단의 Commons 라이브러리 중에 로그 출력을 제공하는 라이브러리
-* Log4j
+* log4j
   * 아파치 재단에서 제공하며 가장 많이 사용되는 로깅 라이브러리
-* Logback
+  * 현재는 개발이 중단되었기에 새 프로젝트에 적용하려면 다른 로깅 프레임워크를 사용해야 함
+* slf4J
+  * 로깅 퍼사드(facade)로서, log4j, logback, commons-logging과 같은 로깅 프레임워크를 위한 추상화를 제공
+  * 스프링 부트에서 이것들을 통합해서 **인터페이스**로 제공하는 것
+  * 예를 들어 log4j를 사용하다가 log4j2로 로깅 프레임워크를 교체하면 많은 코드 수정이 발생한다. 이런 점을 고려하면 slf4j를 사용하고, log4j를 연결하여 사용하는 것이 바람직
+* logback
   * Log4j의 단점 개선 및 기능을 추가하여 개발한 로깅 라이브러리
+  * 구현체
+* log4j2
+  * 가장 최근에 등장
+  * logback과 동일하게 자동 리로드 기능과 필터링 기능을 제공
+
+단순하게 비교만 해본다면 가장 최신이자 빠르며 logback의 아키텍처에서 발생하는 문제점을 수정한 이라고 Appache가 소개하는 log4j2를 권장.  
+Apache에 따르면 멀티 스레드 환경에서의 비동기 로거(Async Logger)의 경우 log4j 1.x 및 logback보다 몇 배는 빠른 처리량을 보인다고 한다. 그리고 람다 표현식과 사용자 정의 로그 레벨도 지원해줌  
+slf4j + log4j
 
 ## RabbitMq
+* 메세징 큐 시스템
+* 얼랭(Erlang)으로 AMQP를 구현한 메시지 브로커 시스템
+>얼랭(Erlang) : 범용 병렬 프로그래밍 언어  
+>AMQP(Advanced Message Queuing Protocol) : 메시지 지향 미들웨어를 위한 개방형 표준 응용 계층 프로토콜
+
+### 아키텍쳐
+![image](https://user-images.githubusercontent.com/44667299/163817756-5a2460e9-6ba4-4439-9f8f-beb3125d959b.png)  
+사진 출처 : https://blog.dudaji.com/general/2020/05/25/rabbitmq.html
+
+* Message
+  * 처리해야할 내용이 담겨져 있음
+* Producer
+  * 메세지를 생성하고 발송하는 주체
+  * message를 consumer에게 위임하기 위해 message를 exchange에 publish 하는 자
+  * message를 보내는 일 이외에는 아무일도 하지 않음
+  * 메세지는 Queue에 저장이 되는데 Producer는 Queue에 직접 접근하지 않고 항상 Exchange를 통해 접근
+* Consumer
+  * message를 Producer로 부터 위임 받아 처리하는 자
+  * 메세지를 수신하는 주체
+  * Queue에 직접 접근하여 메세지를 가져옴
+* Queue
+  * Producer들이 발송한 메세지들이 Consumer가 소비하기 전까지 보관되는 장소
+* Exchange
+  * Producer에서 전달받은 message를 Queue에게 전달 해줌
+  * Producer들에게서 전달받은 메세지들을 어떤 Queue들에게 발송할지를 결정
+  * 메시지를 어떤 Queue에 추가할지, 얼마나 추가할지, 아니면 그냥 버려야할지 이는 Exchange 규칙에 의해 결정
+  * 네 가지 타입이 있으며, 일종의 라우터 개념
+* Bindings
+  * 생성된 Exchange 에는 전달받은 메시지를 원하는 Queue로 전달하기 위해 Bindings이라는 규칙을 정의할 수 있다.
+  * 간단하게 목적지 Queue이름만으로도 Binding을 추가할 수 있고, 일부 Exchange type에 따라 routing key를 지정해서 메시지를 필터링 한 후 지정한 Queue로 보내도록 정의할 수 있다.
+
+Exchange 타입
+|타입|설명|특징|
+|---|---|---|
+|Direct|Routing key가 정확히 일치하는 Queue에 메세지 전송|Unicast|
+|Topic|Routing key 패턴이 일치하는 Queue에 메세지 전송|Multicast|
+|Headers|[key:value]로 이루어진 header 값을 기준으로 일치하는 Queue에 메세지 전송|Multicast|
+|Fanout|해당 Exchange에 등록된 모든 Queue에 메세지 전송|Broadcast|
+
+### 왜 사용하나
+**Microservices 간의 연결**  
+Microservice들 간 연결로 사용할 여러 서비스
+* Brokers (ex : RabbitMQ / Kafka)
+* Remote Prodecure Calls (RPC)
+* REST APIS
+
+<br/>
+
+**Message Queueing**
+* Message Queues를 사용하면 응용 프로그램의 일부가 메시지를 대기열에 비동기식으로 푸시하고 올바른 대상으로 전달되는지 확인할 수 있음
+* 메시지 브로커는 수신 서비스가 사용 중이거나 연결이 끊어졌을 때 임시 메시지 저장소를 제공함
+
+<br/>
+
+**Microservices 아키텍처에서 브로커 역할**  
+RabbitMQ는 비동기 처리를 가능하게 한다. 즉, 메시지를 즉시 처리하지 않고 큐에 넣을 수 있다.  
+  
+따라서 RabbitMQ는 장기 실행 작업(long-running tasks) 또는 차단 작업(blocking tasks)에 이상적이며, 웹 서버가 현장에서 계산 집약적인 작업(computationally intensive tasks)을 수행하지 않고 요청에 신속하게 응답 할 수 있다.  
+  
+RabbitMQ는 단순히 메시지를 저장하고 준비가 되면 Consumers에게 전달한다.
+
+* RabbitMQ는 신뢰할 수있는 오픈 소스 메시지 브로커이다.
+  * 지속적으로 업데이트되고 개선되고 있음
+* RabbitMQ는 기본적으로 AMQP 0.9.1을 구현하는 AMQP, MQTT, STOMP 등과 같은 여러 표준화 된 프로토콜을 지원한다.
+  * 다양한 표준화 된 메시지 프로토콜을 지원하는 RabbitMQ의 기능은 다양한 시나리오에서 사용할 수 있으며 RabbitMQ 브로커를 AMQP 기반 브로커로 대체 할 수 있음을 의미
+* RabbitMQ는 다양한 산업 분야의 많은 회사에서 사용하고 있으며 대기업(Zalando, WeWork, Wunderlist, Bloomberg 등)에서 사용하고 신뢰한다.
+  * Microservices 기반 아키텍처에 의존
+* RabbitMQ는 사용자 친화적이며 이러한 RabbitMQ 모범 사례를 따르면 의도 한 목적에 맞게 구성을 쉽게 조정할 수 있다.
+  * RabbitMQ는 Erlang으로 작성되었으며 세계에서 가장 많이 배포 된 오픈 소스 메시지 브로커이다.
+  * 즉, 잘 테스트되고 강력한 브로커임
+* RabbitMQ 브로커는 확장 가능하고 유연하다.
+  * 팀은 대기열과 메시지를주고받는 Producer와 Consumer만 유지하면 됨
+  * 부하가 높을 때 대기열이 커지면 Consumer를 더 추가하고 작업을 병렬화하는 것이 표준
+  * 이것은 간단하고 효과적인 확장 방법
+
+<br/>
+
+RabbitMQ는 다재다능하고 신뢰할 수 있는 메시지 브로커임
+
 ## ActiveMq
 ## 카프카
 ## ELK(elasticStack)
