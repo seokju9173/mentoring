@@ -381,7 +381,7 @@ wakeup(PID)로 해당 프로세스의 프로세스 제어 블록이 준비 상�
 
 ## 동기(Synchronous)와 비동기(Asynchronous) 및 Blocking 과 Non-Blocking
 Synchronous와 Asynchronous는 **작업을 수행하는 주체에 대한 관점**<br>Blocking과 Non-Blocking은 **제어권이 어디에 있느냐에 대한 관점**
-### 동기(Synchronous)
+### 1. 동기(Synchronous)
 
 ```
 두 개 이상의 주체가 작업 시간을 똑같이 맞출 때
@@ -402,7 +402,7 @@ Synchronous와 Asynchronous는 **작업을 수행하는 주체에 대한 관점*
 > A와 B가 시작시간 또는 종료시간이 일치하면 Synchronous(동기)<br>
 > ex) JAVA - CyclicBarrier
 
-### 비동기(Asynchronous)
+### 2. 비동기(Asynchronous)
 
 ```
 두 개 이상의 주체가 작업 시간을 서로 맞추지 않을 때
@@ -416,7 +416,7 @@ Synchronous와 Asynchronous는 **작업을 수행하는 주체에 대한 관점*
 > 각자 별도의 시작시간, 끝나는 시간을 가지고 있으면 Asynchronous(비동기)<br>
 > 두 가지 이상의 대상이 서로 시간을 맞춰 행동하지 않는 것
 
-### Blocking
+### 3. Blocking
 
 ```
 직접 제어할 수 없는 대상의 작업이 끝날 때까지 기다려야 하는 경우
@@ -431,7 +431,7 @@ Synchronous와 Asynchronous는 **작업을 수행하는 주체에 대한 관점*
 > 엔지니어 A가 작업을 마치고 팀장에게 알리면서 동시에 제어권도 돌려줌<br>
 > 제어권이 없는 상태 => **Blocking**이 되며 다른 일을 할 수 없는 상태가 됨
 
-### Non-Blocking
+### 4. Non-Blocking
 
 ```
 직접 제어할 수 없는 대상의 작업이 완료되기 전에 제어권을 넘겨주는 경우
