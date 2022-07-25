@@ -379,4 +379,66 @@ wakeup(PID)로 해당 프로세스의 프로세스 제어 블록이 준비 상�
 
 * 타임 슬라이스는 되도록 작게 설정하되 문맥 교환에 걸리는 시간을 고려하여 적당한 크기로 하는 것이 중요
 
-## 동기와 비동기 
+## 동기(Synchronous)와 비동기(Asynchronous) 및 Blocking 과 Non-Blocking
+Synchronous와 Asynchronous는 **작업을 수행하는 주체에 대한 관점**<br>Blocking과 Non-Blocking은 **제어권이 어디에 있느냐에 대한 관점**
+### 동기(Synchronous)
+
+```
+두 개 이상의 주체가 작업 시간을 똑같이 맞출 때
+답변을 기다리는 것
+```
+
+<picture>
+  <img src="https://velog.velcdn.com/images%2Fguswns3371%2Fpost%2F1e696752-5f8c-43b2-8cf4-4cc513762189%2Fimage.png">
+</picture>
+
+> A가 끝나는 시간과 B가 시작하는 시간을 맞추면 Synchronous(동기)<br>
+> ex) JAVA - synchronized, BlockingQueue
+
+<picture>
+  <img src="https://velog.velcdn.com/images%2Fguswns3371%2Fpost%2Fb50808ff-b090-4396-a3fd-4e284908fdde%2Fimage.png">
+</picture>
+
+> A와 B가 시작시간 또는 종료시간이 일치하면 Synchronous(동기)<br>
+> ex) JAVA - CyclicBarrier
+
+### 비동기(Asynchronous)
+
+```
+두 개 이상의 주체가 작업 시간을 서로 맞추지 않을 때
+답변을 기다리지 않는 것
+```
+
+<picture>
+  <img src="https://velog.velcdn.com/images%2Fguswns3371%2Fpost%2F8d93245e-e316-4502-9774-ccae1b752636%2Fimage.png">
+</picture>
+
+> 각자 별도의 시작시간, 끝나는 시간을 가지고 있으면 Asynchronous(비동기)<br>
+> 두 가지 이상의 대상이 서로 시간을 맞춰 행동하지 않는 것
+
+### Blocking
+
+```
+직접 제어할 수 없는 대상의 작업이 끝날 때까지 기다려야 하는 경우
+```
+
+<picture>
+  <img src="https://velog.velcdn.com/images%2Fguswns3371%2Fpost%2Ff87c23bc-2194-4245-8212-6879b975bb2f%2Fimage.png">
+</picture>
+
+> 개발 부서 전체 작업의 제어권을 가진 팀장이 엔지니어 A에게 제어권을 넘김<br>
+> 엔지니어 A가 작업을 수행할 동안 개발 부서 전체는 이를 기다림<br>
+> 엔지니어 A가 작업을 마치고 팀장에게 알리면서 동시에 제어권도 돌려줌<br>
+> 제어권이 없는 상태 => **Blocking**이 되며 다른 일을 할 수 없는 상태가 됨
+
+### Non-Blocking
+
+```
+직접 제어할 수 없는 대상의 작업이 완료되기 전에 제어권을 넘겨주는 경우
+```
+
+<picture>
+  <img src="https://velog.velcdn.com/images%2Fguswns3371%2Fpost%2F1ad8b445-869d-49d9-925f-5ef7dd9cff28%2Fimage.png">
+</picture>
+
+> 제어권을 바로 팀장에게 돌려주기 때문에 개발 부서는 엔지니어 A의 작업을 기다리지 않음 -> 다른 일을 할 수 있는 상태가 됨
