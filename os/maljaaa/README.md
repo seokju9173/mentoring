@@ -95,3 +95,15 @@ wakeup(PID)로 해당 프로세스의 프로세스 제어 블록이 준비 상�
 |실행 상태|<ul><li>선택된 프로세스가 타임 슬라이스를 얻어 CPU를 사용하는 상태</li></ul><ul><li>프로세스 사이의 문맥 교환이 일어남</li></ul>|timeout(PID) : 실행 -> 준비<br>exit(PID) : 실행 -> 완료<br>block(PID) : 실행 -> 대기|
 |대기 상태|<ul><li>실행 상태에 있는 프로세스가 입출력을 요청하면 입출력이 완료될 때까지 기다리는 상태</li></ul><ul><li>입출력이 완료되면 준비 상태로 감</li></ul>|wakeup(PID) : 대기 -> 준비|
 |완료 상태|<ul><li>프로세스가 종료된 상태</li></ul><ul><li>사용하던 모든 데이터가 정리됨</li></ul><ul><li>정상 종료인 exit와 비정상 종료인 abort를 포함</li></ul>|메모리삭제, 프로세스 제어 블록 삭제|
+
+### 5. 프로세스 제어 블록(PCB) 
+
+```
+프로세스 제어 블록(PCB)은 프로세스를 실행하는 데 필요한 중요한 정보를 보관하는 자료 구조로 TCB(Task Control Block)라고도 한다.
+모든 프로세스는 고유의 프로세스 제어 블록을 가지며, 프로세스 제어 블록은 프로세스 생성 시 만들어져서 프로세스가 실행을 완료하면 폐기된다.
+```
+
+### 5-1. 프로세스 제어 블록의 구성
+<picture>
+  <img src="구성도" src="https://blog.kakaocdn.net/dn/cjrby0/btqIarikobp/wPTdGGKemxiT7XkXXEBdQ0/img.png">
+</picture>
