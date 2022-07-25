@@ -134,7 +134,7 @@ wakeup(PID)로 해당 프로세스의 프로세스 제어 블록이 준비 상�
 ### 1. 스레드란?
 
 <picture>
-  <img src="스레드" src="[https://blog.kakaocdn.net/dn/cjrby0/btqIarikobp/wPTdGGKemxiT7XkXXEBdQ0/img.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FosRVf%2FbtqHBR7RijE%2Fh37xgA9jZLc31VEw03zMw0%2Fimg.png)">
+  <img src="스레드" src="https://blog.kakaocdn.net/dn/cjrby0/btqIarikobp/wPTdGGKemxiT7XkXXEBdQ0/img.png">
 </picture>
 
 ```
@@ -225,3 +225,92 @@ wakeup(PID)로 해당 프로세스의 프로세스 제어 블록이 준비 상�
   * 운영체제가 시스템 자원을 효율적으로 관리하기 위해 스레드를 사용
   * 프로세스를 생성하여 자원을 할당하는 시스템 콜이 줄어들어 자원을 효율적으로 관리 가능
   * 프로세스 간의 통신보다 스레드 간의 통신 비용이 적기 때문에 작업들 간 통신의 부단이 줄어듬(프로세스는 독립구조 -> 처리비용 감소)
+
+## 스케줄러
+### 1. 장기 스케줄러
+* 시스템 내의 전체 작업 수를 조절하는 스케줄러 -> 풀(pool)로부터 프로세스들을 선별하고 실행을 위해 메모리에 적재
+* 어떤 작업(운영체제에서 다르는 일의 가장 큰 단위로, 1개 또는 여러 개의 프로세스로 이루어짐)을 시스템이 받아들일지 또는 거불할지를 결정
+* 장기 스케줄러에 의해 시스탬 내에서 동시에 실행 가능한 프로세스의 총 개수가 정해짐
+* 고수준 스케줄러, 작업 스케줄러, 승인 스케줄러, CPU 스케줄러과 같은 의미
+
+### 2. 단기 스케줄러
+* 어떤 프로세스에 CPU를 할당할지, 어떤 프로세스를 대기 상태로 보낼지 등을 결정 -> 실행이 준비된 프로세스들 중 하나를 선별해 CPU에 할당
+* 프로세스 상태에 관한 내용은 대부분 여기에 해당
+* 저수준 스케줄링과 같은 의미
+
+### 3. 중기 스케줄러
+* 중지(suspend, 보류상태로 넘어감)와 활성화(active)로 전체 시스템의 활성화된 프로세스 수를 조절하여 과부하를 막음
+* Swapper, 중간 수준 스케줄링과 같은 의미
+
+## CPU 스케줄러
+### 1. 선점형 & 비선점형
+* 선점형 스케줄링 : 어떤 프로세스가 CPU를 할당받아 실행 중이더라도 운영체제가 CPU를 강제로 빼앗을 수 있는 스케줄링 방식
+* 비선점형 스케줄링 : 어떤 프로세스가 CPU를 점유하면 다른 프로세스가 이를 빼앗을 수 없는 스케줄링 방식
+
+|구분|종류|
+|:---:|:---:|
+|비선점형 알고리즘|FCFS 스케줄링, SJF 스케줄링, HRN 스케줄링|
+|선점형 알고리즘|Round Robin 스케줄링, SRT 스케줄링, 다단계 큐 스케줄링, 다단계 피드백 큐 스케줄링|
+|둘 다 가능|우선순위 스케줄링|
+
+### 2. FCFS(First Come First Served)
+
+```
+준비 큐에 도착한 순서대로 CPU를 할당하는 비선점형 방식으로, 선입선출 스케줄링이라고도 한다.
+```
+
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-56.png">
+</picture>
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-57.png">
+</picture>
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-58-768x257.png">
+</picture>
+
+* 장점
+  * 단순하고 공평함
+
+* 단점
+  * 처리 시간이 긴 프로세스가 CPU를 차지하면 다른 프로세스들은 하엽없이 기다려 시스템의 효율성이 떨어지는 문제 발생 => 콘보이 효과 or 호위 효과
+  * 현재 작업 중인 프로세스가 입출력 작업을 요청하는 경우 CPU가 작업하지 않고 쉬는 시간이 많아져 작업 효율이 떨어짐
+
+### 3. SJF(Shortest - Job - First)
+
+```
+준비 큐에 있는 프로세스 중에서 실행 시간이 가장 짧은 작업부터 CPU를 할당하는 비선점형 방식으로, 최단 작업 우선 스케줄링이라고도 한다.
+```
+
+> FCFS 스케줄링의 콘보이 효과를 완화하여 시스템의 효율성을 높인 것<br>
+> SPF(Shortest Process First), 최단 프로세스 우선 스케줄링과 같은 말
+
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-60.png">
+</picture><br>
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-61.png">
+</picture><br>
+<picture>
+  <img src="https://shacoding.com/wp-content/uploads/2022/04/image-63.png">
+</picture>
+
+* 장점
+  * 작은 작업을 먼저 실행하기 때문에 시스템의 효율성이 좋아짐
+
+* 단점
+  * 운영체제가 프로세스 종료 시간을 정확하게 예측하기 어려움
+    - 현대의 프로세스는 사용자와의 상호작용이 빈번하게 발생하기 때문
+  * 공평하지 않음
+    - 먼저 도착해도 늦게 실행되는 프로세스가 있음
+    - 작업이 계속 연기되는 것 => 아사현상(starvation) or 무한 봉쇄 현상(infinite blocking)
+
+* 단점 해결책
+  * 프로세스가 자신의 작업 시간을 운영체제에 알려주어 해결
+    - 프로세스가 자신의 작업 시간을 정확히 알기 어려움
+    - 일부 악의적인 프로세스가 작업 시간을 속인다면 시스템의 효율성이 나빠짐
+  * 에이징(나이먹기, aging)으로 완화할 수 있음
+    - 프로세스가 양보할 수 있는 상한선을 정하는 방식
+    - 에이징 값을 어떤 기준으로 정할 것인지가 문제
+
+### 4. SRTF
