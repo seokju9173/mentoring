@@ -18,7 +18,7 @@
 ### SRTF(Shortest Remaining Time First)
 ### Priority Scheduling
 ### Round Robin
-## 동기와 비동기 및 Sync와 Async 차이
+## 동기와 비동기 및 Block non-Block
 ## 동시성 문제 
 ### Critical Section(임계영역)
 ### RaceCondition
