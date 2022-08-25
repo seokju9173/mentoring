@@ -729,17 +729,22 @@ JVM에서 동작하는 프로그래밍 언어
   + 그래서 자바와 다르게 개발자가 타입을 선언하지 않아도 된다. (타입추론지원)
   + 개발자가 아니라 컴파일러가 프로그램의 정확성을 검증하기 때문에 프로그램이 오류로 중단될 가능성이 적어진다.
 + 코드 면에서 더 간결하다.
-  +자바
-> class Java {
-> 	public void main(String[] args) {
-> 		System.out.println(“HelloWorld”);
-> 	}
-> }
+
++ 자바
+```java
+class Java {
+  public void main(String[] args) {
+    System.out.println(“HelloWorld”);
+  }
+}
+```
 
   + 코틀린
-> fun main() {
-> 	print(“HelloWorld”)
-> }
+```kotlin
+fun main() {
+	print(“HelloWorld”)
+}
+```
 
 + Null 안정성
   + 코틀린은 널이 될 수 있는 타입도 지원한다.
