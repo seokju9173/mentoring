@@ -84,18 +84,25 @@
 -	short 타입은 16비트 정수이고, int 타입은 32bit 정수이므로 short 타입의 값을 int 타입의 값으로 취급해도 값이 변하는 문제는 발생하지 않는다. 
 -	그렇다면 long 데이터 타입의 메모리 크기는 8byte이고, float 데이터 타입의 메모리 크기는 4byte인데, long 데이터 타입에서 float 데이터 타입으로 자동 형변환이 가능하다. 그 이유는 표현할 수 있는 값의 범위가 float이 더 크기 때문이다.
 -	즉, 타입의 데이터 크기가 커지는 변환인 (Widening conversion) 경우에는 호환성이 보장되어 새로운 타입으로 변환된다.
-> sorht shortNum = 100;
-> int intNum = shortNum;    // 확장성에 의한 자동 변환 (short -> int)
-> System.out.println(intNum);
+
+```
+sorht shortNum = 100;
+int intNum = shortNum;    // 확장성에 의한 자동 변환 (short -> int)
+System.out.println(intNum);
+```
 
 -	반대로 축소 변환(Narrowing conversion)의 경우에 호환성이 없기 Eoansd 자동적으로 변환할 수 없어 컴파일 에러가 발생한다.
-> int intNum = 1;
-> short shortNum = intNum;    //컴파일 에러
+```
+int intNum = 1;
+short shortNum = intNum;    //컴파일 에러
+```
 
 #### 강제/명시적 형 변환(캐스팅)
 -	호환성이 없는 경우지만, 형 변환을 하고 싶을 때 사용하는 것이 강제/명시적 형 변환이다.
-> int intNum = 1;
-> short shortNum = (short)intNum;    //컴파일 에러 해결
+```
+int intNum = 1;
+short shortNum = (short)intNum;    //컴파일 에러 해결
+```
 
 
 ## 1차 및 2차 배열 선언하기
