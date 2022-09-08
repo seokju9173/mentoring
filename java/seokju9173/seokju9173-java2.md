@@ -53,7 +53,8 @@
  
 
 ### 라이프타임
-각 변수의 라이프 타임은 다음과 같다.
+각 변수의 라이프 타임은 다음과 같다.  
+
 ![image](https://user-images.githubusercontent.com/85390517/189088740-1f9fc1e2-6f59-47cd-87a9-cd86c82494b9.png)
 
 
